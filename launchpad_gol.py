@@ -1,8 +1,27 @@
 # Game of Life on the Novation Launchpad
 
 import launchpad_py as launchpad
-import random
 from pygame import time
+
+
+L_SIZE = 8
+
+color = (0, 64, 64)
+
+
+def display_grid(grid, lp):
+    """
+    display the grid on the launchpad
+    :param grid: the grid to display
+    :param lp: the launchpad object
+    :return: void
+    """
+    for row in range(0, L_SIZE):
+        for col in range(0, L_SIZE):
+            if grid[row][col] > 0:
+                lp.LedCtrlXY(col, row+1, color[0], color[1], color[2])
+            else:
+                lp.LedCtrlXY(col, row+1, 0, 0, 0)
 
 
 def check_type(lp):
@@ -55,8 +74,21 @@ def init_lp():
 
 
 def main():
-    pass
+    lp = init_lp()
+    grid = [[0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 1, 0, 0, 0, 0],
+            [0, 0, 1, 0, 0, 0, 0, 0],
+            [0, 0, 1, 1, 1, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0]]
 
+    display_grid(grid, lp)
+
+    time.wait(1000)
+
+    lp.LedAllOn(0)
 
 if __name__ == '__main__':
     main()
