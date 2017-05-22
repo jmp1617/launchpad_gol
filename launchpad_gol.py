@@ -141,22 +141,31 @@ def main():
         # lp.LedAllOn(0)
         but = lp.ButtonStateXY()
         if but:
-            if but[0] == 3:
+            if but[0] == 3 and but[1] == 0:
                 play = True
-            if but[0] == 2:
+            elif but[0] == 2 and but[1] == 0:
                 play = False
-            if but[0] == 1:
+            elif but[0] == 1 and but[1] == 0:
                 if speed != 20:
                     speed -= 20
-            if but[0] == 0:
+            elif but[0] == 0 and but[1] == 0:
                 if speed != 1000:
                     speed += 20
+            else:
+                if not play:  # if its paused allow editing via grid buttons
+                    if grid[but[1]-1][but[0]] == 0 and but[2] == 127:
+                        grid[but[1]-1][but[0]] = 1
+                        lp.LedCtrlXY(but[0], but[1], color[0], color[1], color[2])
+                    elif grid[but[1]-1][but[0]] == 1 and but[2] == 127:
+                        grid[but[1]-1][but[0]] = 0
+                        lp.LedCtrlXY(but[0], but[1], 0, 0, 0)
 
         if play:
             display_grid(grid, lp)
             grid = life_cycle(grid)
 
             time.wait(speed)
+
 
 if __name__ == '__main__':
     main()
