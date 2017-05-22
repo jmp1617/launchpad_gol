@@ -67,6 +67,11 @@ def init_lp():
         if lp.Open():
             success = True
 
+    lp.LedCtrlXY(0, 0, 10, 30, 64)  # speed play and pause
+    lp.LedCtrlXY(1, 0, 10, 30, 64)
+    lp.LedCtrlXY(2, 0, 64, 0, 0)
+    lp.LedCtrlXY(3, 0, 0, 64, 0)
+
     if not success:
         exit(1)
     else:
@@ -126,17 +131,32 @@ def main():
             [0, 0, 1, 0, 0, 0, 0, 0],
             [0, 0, 1, 1, 1, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 1, 0, 0, 0, 0, 0, 0],
-            [1, 0, 0, 0, 0, 0, 0, 0],
-            [1, 1, 1, 0, 0, 0, 0, 0]]
+            [0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0]]
 
+    play = True
+    speed = 100
     while cont:
         # lp.LedAllOn(0)
-        display_grid(grid, lp)
+        but = lp.ButtonStateXY()
+        if but:
+            if but[0] == 3:
+                play = True
+            if but[0] == 2:
+                play = False
+            if but[0] == 1:
+                if speed != 20:
+                    speed -= 20
+            if but[0] == 0:
+                if speed != 1000:
+                    speed += 20
 
-        grid = life_cycle(grid)
+        if play:
+            display_grid(grid, lp)
+            grid = life_cycle(grid)
 
-        time.wait(100)
+            time.wait(speed)
 
 if __name__ == '__main__':
     main()
