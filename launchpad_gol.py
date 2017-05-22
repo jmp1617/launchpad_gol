@@ -69,8 +69,9 @@ def init_lp():
 
     lp.LedCtrlXY(0, 0, 10, 30, 64)  # speed play and pause
     lp.LedCtrlXY(1, 0, 10, 30, 64)
-    lp.LedCtrlXY(2, 0, 64, 0, 0)
+    lp.LedCtrlXY(2, 0, 64, 30, 0)
     lp.LedCtrlXY(3, 0, 0, 64, 0)
+    lp.LedCtrlXY(7, 0, 64, 0, 0)
 
     if not success:
         exit(1)
@@ -127,9 +128,9 @@ def main():
     cont = 1
     lp = init_lp()
     grid = [[0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 1, 0, 0, 0, 0],
-            [0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 1, 1, 1, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0],
@@ -139,18 +140,21 @@ def main():
     speed = 100
     while cont:
         # lp.LedAllOn(0)
+
         but = lp.ButtonStateXY()
-        if but:
-            if but[0] == 3 and but[1] == 0:
+        if but:  # check for play pause and speed control
+            if but[0] == 3 and but[1] == 0 and but[2] == 127:
                 play = True
-            elif but[0] == 2 and but[1] == 0:
+            elif but[0] == 2 and but[1] == 0 and but[2] == 127:
                 play = False
-            elif but[0] == 1 and but[1] == 0:
+            elif but[0] == 1 and but[1] == 0 and but[2] == 127:
                 if speed != 20:
                     speed -= 20
-            elif but[0] == 0 and but[1] == 0:
+            elif but[0] == 0 and but[1] == 0 and but[2] == 127:
                 if speed != 1000:
                     speed += 20
+            elif but[0] == 7 and but[1] == 0 and but[2] == 127:
+                cont = False
             else:
                 if not play:  # if its paused allow editing via grid buttons
                     if grid[but[1]-1][but[0]] == 0 and but[2] == 127:
@@ -161,10 +165,15 @@ def main():
                         lp.LedCtrlXY(but[0], but[1], 0, 0, 0)
 
         if play:
-            display_grid(grid, lp)
             grid = life_cycle(grid)
+            display_grid(grid, lp)
 
             time.wait(speed)
+
+        time.wait(speed)
+
+    lp.LedAllOn(0)
+    lp.ButtonFlush()
 
 
 if __name__ == '__main__':
